@@ -1,0 +1,35 @@
+pipeline {
+    //agent any
+    agent {
+        label 'agent1'
+    }
+    environment {
+        myVar = "Outer Block"
+    }
+    stages {
+        stage('checkout'){
+            steps {
+                git branch: 'master',credentialsid:'lokgithubid', url: 'https://github.com/wiproltdcompany/cybage.git'
+            }
+        }
+        stage('Build'){
+            steps{
+                sh "sh array.sh"
+                sh "sleep 60"
+            }
+        }
+        stage('Post Tasks'){
+            steps{
+                sh "echo Emailing"
+            }
+        }
+        stage('Priniting Environment Var'){
+            environment {
+                myVar = "Inner Block"
+            }
+            steps{
+                sh 'echo "This is my variable: $myVar"'
+            }
+        }
+    }
+}
